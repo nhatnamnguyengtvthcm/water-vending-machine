@@ -25,7 +25,6 @@ class GetOrderAPIView(APIView):
         id_order = my_data.data['orderId']
         items = my_data.data['items']
 
-        OrderForm.objects.filter(state=False).update(state=True)
         cf = OrderForm.objects.create(clientId=id_client, orderId=id_order, state=False)
         for i in items:
             ci = Items.objects.create(id=i['id'], position=i['position'], quantity=i['quantity'],
@@ -40,6 +39,8 @@ class GetOrderAPIView(APIView):
         buffer = Items.objects.filter(order_Form__state=False)
         item_list = ItemSerialier(buffer, many=True)
 
+        donhang = OrderForm.objects.filter(state=False).update(state=True)
+        #donhang.save()
         # if item_list.is_valid():
         #     OrderForm.objects.filter(state=False).update(state=True)
         return Response(data=item_list.data, status=status.HTTP_200_OK)
